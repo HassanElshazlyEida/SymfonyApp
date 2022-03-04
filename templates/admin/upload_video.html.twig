@@ -1,4 +1,9 @@
-<?php include('includes/_header.php'); ?>
+
+{% extends 'admin/base.html.twig'%}
+
+{% block body %}
+
+{% block title %}Upload a video{% endblock %}
 
             <h2>Upload a video</h2>
 
@@ -12,4 +17,4 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
-<?php include('includes/_footer.php'); ?>
+{% endblock %}
