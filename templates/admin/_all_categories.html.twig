@@ -1,0 +1,11 @@
+
+{% if editedCategory.parent is defined and editedCategory.parent == null %}
+    <option selected value="0"> No Parent </option>
+{% else %}
+    <option value="0"> No Parent </option>
+
+{% endif %}
+
+{% for category in categories %}
+    <option value="{{category.id}}" {{ (editedCategory.parent.getId() is defined and (editedCategory.parent.getId() == category.id)) ? 'selected' : '' }} >{{category.name}}</option>
+{% endfor %}

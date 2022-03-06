@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class FrontController extends AbstractController
 {
@@ -28,13 +29,16 @@ class FrontController extends AbstractController
     }
 
      /**
-     * @Route("/video-list/category/{category},{id}", name="videoList")
+     * @Route("/video-list/category/{categoryName},{category}", name="videoList")
+     *
      */
-    public function videoList($id,CategoryTreeFrontPage $categories): Response
+    public function videoList(Category $category,CategoryTreeFrontPage $categories): Response
     {
-        $subCategories=$categories->buildTree($id);
+
+        $subCategories=$categories->buildTree($category->getId());
         return $this->render('front/videolist.html.twig', [
             'controller_name' => 'FrontController',
+            "category"=>$category,
             'subCategories'=> $categories->getCategoryList($subCategories)
         ]);
     }

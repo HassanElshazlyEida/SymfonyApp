@@ -1,4 +1,4 @@
 
 {% for category in categories %}
-<a class="p-2 text-dark" href="{{path('videoList',{"category":category.name|lower|slugify,"id":category.id})}}">{{category.name}}</a>
+<a class="p-2 text-dark" href="{{path('videoList',{"categoryName":category.name|lower|slugify,"category":category.id})}}">{{category.name}}</a>
 {% endfor %}

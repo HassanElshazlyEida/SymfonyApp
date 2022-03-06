@@ -12,7 +12,7 @@ class CategoryTreeFrontPage extends CategoryTreeAbstract {
         foreach ($categories_array as $value){
 
             $catName = $value['name'];
-            $url = $this->urlgenerator->generate('videoList',['category'=>$catName,'id'=>$value['id']]);
+            $url = $this->urlgenerator->generate('videoList',['categoryName'=>$catName,'category'=>$value['id']]);
             $this->categoryList.= '<li>' .'<a href="'. $url. '">'.
             $catName. '</a>'.'</li>';
 
