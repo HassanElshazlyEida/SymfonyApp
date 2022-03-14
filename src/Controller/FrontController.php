@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Video;
 use App\Entity\Category;
 use App\Utils\CategoryTreeFrontPage;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,16 +31,18 @@ class FrontController extends AbstractController
     }
 
      /**
-     * @Route("/video-list/category/{categoryName},{category}", name="videoList")
+     * @Route("/video-list/category/{categoryName},{category}/{page}", name="videoList", defaults={"page": 1})
      *
      */
-    public function videoList(Category $category,CategoryTreeFrontPage $categories): Response
+    public function videoList(Category $category,CategoryTreeFrontPage $categories,$page): Response
     {
 
         $subCategories=$categories->buildTree($category->getId());
+        $videos=$this->em->getRepository(Video::class)->findAllPaginated($page);
         return $this->render('front/videolist.html.twig', [
             'controller_name' => 'FrontController',
             "category"=>$category,
+            'videos'=>$videos,
             'subCategories'=> $categories->getCategoryList($subCategories)
         ]);
     }

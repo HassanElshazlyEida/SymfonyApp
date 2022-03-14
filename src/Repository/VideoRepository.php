@@ -3,10 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Video;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\DependencyInjection\Container;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Video|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +19,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class VideoRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    protected $container;
+    public function __construct(ManagerRegistry $registry,PaginatorInterface $paginator)
     {
         parent::__construct($registry, Video::class);
+        $this->paginator=$paginator;
+     
     }
 
     /**
@@ -44,7 +50,13 @@ class VideoRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    public function findAllPaginated ($page) {
+        $dbquery = $this->createQueryBuilder('v')
+        ->getQuery ();
+        $pagination = $this->paginator->paginate($dbquery, $page, 3);
+        return $pagination;
+    }
+    
     // /**
     //  * @return Video[] Returns an array of Video objects
     //  */
