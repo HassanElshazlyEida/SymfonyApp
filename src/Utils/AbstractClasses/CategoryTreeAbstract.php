@@ -8,10 +8,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class CategoryTreeAbstract {
 
     public $categoryList;
+    public $categories;
     public function __construct(EntityManagerInterface $em,UrlGeneratorInterface $urlgenerator)
     {
         $this->em=$em;
         $this->urlgenerator=$urlgenerator;
+        $this->categories=$this->getCategories();
     }
 
     abstract public function getCategoryList(array $categories_array);

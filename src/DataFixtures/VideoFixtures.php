@@ -17,7 +17,7 @@ class VideoFixtures extends Fixture
             $video = new Video();
             $video->setTitle($title);
             $video->setPath('https://player.vimeo.com/video/'.$path);
-            $video->setCategoy($category);
+            $video->setCategory($category);
             $video->setDuration($duration);
             $manager->persist($video);
         }

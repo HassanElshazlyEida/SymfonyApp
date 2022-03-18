@@ -22,17 +22,8 @@
                         </ul>
                     </div>
                 </div>
+                {{ include('front/includes/_sort.html.twig',{'query':query })}}
 
-                <div class="form-row align-items-center ml-3">
-                    <form action="#" method="POST">
-                        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" onchange='this.form.submit();'>
-                            <option selected>Sort...</option>
-                            <option value="1">Highest rated</option>
-                            <option value="2">Title A-Z</option>
-                            <option value="3">Title Z-A</option>
-                        </select>
-                    </form>
-                </div>
             </div>
         </div>
     </section>
@@ -40,9 +31,10 @@
         <div class="container">
             {{ include('front/includes/_videos.html.twig',{'videos':videos})}}
 
-          
-            <!-- pagination -->
-            {{ knp_pagination_render(videos) }}
+            <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+                <!-- pagination -->
+                {{ knp_pagination_render(videos) }}
+            </div>
         </div>
     </div>
 

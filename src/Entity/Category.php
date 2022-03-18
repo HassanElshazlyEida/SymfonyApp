@@ -45,7 +45,7 @@ class Category
     private $subcategoires;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="categoy")
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="category")
      */
     private $videos;
 
@@ -125,7 +125,7 @@ class Category
     {
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;
-            $video->setCategoy($this);
+            $video->setCategory($this);
         }
 
         return $this;
@@ -135,8 +135,8 @@ class Category
     {
         if ($this->videos->removeElement($video)) {
             // set the owning side to null (unless already changed)
-            if ($video->getCategoy() === $this) {
-                $video->setCategoy(null);
+            if ($video->getCategory() === $this) {
+                $video->setCategory(null);
             }
         }
 

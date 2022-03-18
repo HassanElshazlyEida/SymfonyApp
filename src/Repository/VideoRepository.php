@@ -50,13 +50,46 @@ class VideoRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-    public function findAllPaginated ($page) {
+    public function findByChildIds(array $arr,$page= null,?string $sort){
+        $sort= $sort != 'rating' ? $sort : 'ASC';
         $dbquery = $this->createQueryBuilder('v')
+        ->where('v.category IN(:val)')
+        ->setParameter('val',$arr)
+        ->orderBy('v.title',$sort)
         ->getQuery ();
-        $pagination = $this->paginator->paginate($dbquery, $page, 3);
-        return $pagination;
+        if($page){
+           $dbquery= $this->Paginated($dbquery,$page);
+        } 
+        return  $dbquery;
     }
-    
+    public function Paginated($dbquery,$page) {
+        return  $this->paginator->paginate($dbquery, $page, 3);
+    }
+    public function findByTitle(string $query,?string $sort,$page=null){
+
+        $sort= $sort != 'rating' ? $sort : 'ASC';
+        $searchTerms= $this->prepareQuery($query);  
+        $querybuilder = $this->createQueryBuilder('v');
+       
+        foreach($searchTerms as  $key=> $term) {
+            $querybuilder
+            ->orwhere ('v.title LIKE :t_'.$key)
+            ->setParameter ('t_'. $key, '%'.trim($term). '%');
+        }
+
+        $dbquery= $querybuilder
+        ->orderBy('v.title',$sort)
+        ->getQuery();
+        if($page){
+            $dbquery= $this->Paginated($dbquery,$page);
+        } 
+        return  $dbquery;
+
+    }
+
+    private function prepareQuery(string $query){
+        return explode(' ',$query);
+    }
     // /**
     //  * @return Video[] Returns an array of Video objects
     //  */

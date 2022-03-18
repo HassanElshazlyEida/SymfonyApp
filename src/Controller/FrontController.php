@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 
 class FrontController extends AbstractController
 {
@@ -34,11 +35,14 @@ class FrontController extends AbstractController
      * @Route("/video-list/category/{categoryName},{category}/{page}", name="videoList", defaults={"page": 1})
      *
      */
-    public function videoList(Category $category,CategoryTreeFrontPage $categories,$page): Response
+    public function videoList(Category $category,CategoryTreeFrontPage $categories,$page,Request $request): Response
     {
 
         $subCategories=$categories->buildTree($category->getId());
-        $videos=$this->em->getRepository(Video::class)->findAllPaginated($page);
+       
+        $collection=$categories->getChilIds($category->getId());
+        $collection[]=(string)$category->getId();
+        $videos=$this->em->getRepository(Video::class)->findByChildIds($collection,$page,$request->get('sortby'));
         return $this->render('front/videolist.html.twig', [
             'controller_name' => 'FrontController',
             "category"=>$category,
@@ -59,12 +63,20 @@ class FrontController extends AbstractController
 
 
      /**
-     * @Route("/search-results", name="search_results",methods={"POST"})
+     * @Route("/search-results/{page}", name="search_results",methods={"GET"},defaults={"page":"1"})
      */
-    public function searchResults(): Response
+    public function searchResults($page,Request $request): Response
     {
+    
+        if($query = $request->get('query')){
+            $videos = $this->em->getRepository(Video::class)
+            ->findByTitle($query, $request->get('sortby'),$page);
+            if(!$videos->getItems()) $videos=null;
+        }
+      
         return $this->render('front/search_results.html.twig', [
-            'controller_name' => 'FrontController',
+            'videos' => $videos ?? null,
+            'query'  => $query ?? null
         ]);
     }
 
