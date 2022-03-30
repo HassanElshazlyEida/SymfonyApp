@@ -70,7 +70,6 @@ class VideoRepository extends ServiceEntityRepository
         $sort= $sort != 'rating' ? $sort : 'ASC';
         $searchTerms= $this->prepareQuery($query);  
         $querybuilder = $this->createQueryBuilder('v');
-       
         foreach($searchTerms as  $key=> $term) {
             $querybuilder
             ->orwhere ('v.title LIKE :t_'.$key)

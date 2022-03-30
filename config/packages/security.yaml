@@ -3,16 +3,47 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+   
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            form_login: 
+                # authorized bridge page
+                check_path: login
+                # if login success
+                default_target_path: admin
+                # middleware -> redirect to {} if not authorized
+                login_path: login
+            
+                
+                enable_csrf: true
+
+                username_parameter: _email
+                
+            logout:
+
+                path: logout
+                # if logout success
+                target: app_front
+            remember_me:
+
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

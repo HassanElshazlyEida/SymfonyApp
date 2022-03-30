@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class FrontController extends AbstractController
 {
@@ -22,7 +23,7 @@ class FrontController extends AbstractController
 
     }
     /**
-     * @Route("/front", name="app_front")
+     * @Route("/", name="app_front")
      */
     public function index(): Response
     {
@@ -102,11 +103,21 @@ class FrontController extends AbstractController
     /**
      * @Route("/login", name="login")
      */
-    public function login(): Response
+    public function login(AuthenticationUtils $helper): Response
     {
+
         return $this->render('front/login.html.twig', [
-            'controller_name' => 'FrontController',
+            'error' => $helper->getLastAuthenticationError()
         ]);
+    }
+    
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout(): void
+    {
+
+        throw new \Exception('Authenticated');
     }
     
       /**
